@@ -219,51 +219,6 @@
             box-shadow: 0 0 16px rgba(0, 240, 255, 0.4); transform: scale(1.06);
         }
 
-        /* CHAT MODAL */
-        .chat-overlay {
-            position: fixed; inset: 0; background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(6px); z-index: 1000;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
-        }
-        .chat-overlay.active { opacity: 1; pointer-events: all; }
-        .chat-modal {
-            position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -52%) scale(0.92);
-            z-index: 1001; background: rgba(10, 10, 13, 0.97);
-            backdrop-filter: blur(24px); border: 1px solid rgba(0, 240, 255, 0.18);
-            border-radius: 22px; padding: 30px 26px 24px;
-            width: 90%; max-width: 320px;
-            box-shadow: 0 30px 80px rgba(0,0,0,0.9), 0 0 40px rgba(0, 240, 255, 0.08);
-            opacity: 0; pointer-events: none; transition: all 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        .chat-modal.active { opacity: 1; pointer-events: all; transform: translate(-50%, -50%) scale(1); }
-        .chat-close { position: absolute; top: 14px; right: 16px; background: none; border: none; color: var(--muted); font-size: 15px; transition: color 0.2s, transform 0.2s; }
-        .chat-close:hover { color: var(--primary); transform: scale(1.2); }
-        .chat-modal-title { font-family: 'ElegantTypewriterBold', sans-serif; font-size: 19px; background: var(--gradient); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 4px; }
-        .chat-modal-sub { font-size: 11px; color: var(--muted); margin-bottom: 20px; }
-
-        .chat-input, .chat-textarea {
-            width: 100%; background: rgba(255, 255, 255, 0.04);
-            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 11px;
-            color: var(--white); font-family: 'JetBrains Mono', monospace; font-size: 12px;
-            padding: 11px 13px; outline: none; margin-bottom: 5px; transition: 0.25s; resize: none; display: block;
-        }
-        .chat-textarea { height: 90px; }
-        .chat-input:focus, .chat-textarea:focus { border-color: rgba(0, 240, 255, 0.35); box-shadow: 0 0 12px rgba(0, 240, 255, 0.08); background: rgba(0, 240, 255, 0.03); }
-
-        .char-counter { text-align: right; font-size: 10px; color: var(--muted); margin-bottom: 10px; padding-right: 5px; }
-
-        .chat-send {
-            width: 100%; padding: 12px; background: rgba(255, 0, 60, 0.12);
-            border: 1px solid rgba(255, 0, 60, 0.35); border-radius: 11px;
-            color: var(--white); font-family: 'JetBrains Mono', monospace;
-            font-size: 13px; font-weight: 500; transition: all 0.3s ease; box-shadow: 0 0 15px var(--glow-prim);
-        }
-        .chat-send:hover:not(:disabled) { background: var(--primary); border-color: var(--primary); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(255, 0, 60, 0.4); }
-        .chat-feedback { font-size: 11px; text-align: center; margin-top: 11px; min-height: 18px; transition: all 0.3s; }
-        .chat-feedback.success { color: var(--secondary); text-shadow: 0 0 8px var(--glow-sec); }
-        .chat-feedback.error   { color: var(--primary); text-shadow: 0 0 8px var(--glow-prim); }
-
         /* PROFILE PICTURE */
         .pfp-container { position: relative; width: 115px; height: 115px; margin: 0 auto 20px auto; }
         .pfp { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; background-image: var(--gradient); padding: 2px; }
@@ -482,25 +437,6 @@
         Click to enter &lt;3
         <!-- 🔖 CHANGE: Your site's name shown on the entry screen -->
         <span>Your Name's Space</span>
-    </div>
-
-    <!-- Chat modal (sends a message to your Discord via webhook) -->
-    <div class="chat-overlay" id="chatOverlay" onclick="closeChat()"></div>
-    <div class="chat-modal" id="chatModal">
-        <button class="chat-close" onclick="closeChat()"><i class="fas fa-times"></i></button>
-        <div class="chat-modal-title">Leave a message 💬</div>
-        <div class="chat-modal-sub">
-            <!-- 🔖 CHANGE: Update this text to say where messages go -->
-            I'll receive it on Discord<br>
-            <span style="color:#ff003c;">Please don't spam me &lt;3</span>
-        </div>
-        <input type="text" id="chatName" class="chat-input" placeholder="Your name..." maxlength="50" autocomplete="off">
-        <textarea id="chatMsg" class="chat-textarea" placeholder="Your message..." maxlength="500"></textarea>
-        <div class="char-counter" id="char-count">0/500</div>
-        <button class="chat-send" id="chatSendBtn" onclick="sendMessage()">
-            Send &nbsp;<i class="fas fa-paper-plane"></i>
-        </button>
-        <div class="chat-feedback" id="chatFeedback"></div>
     </div>
 
     <!-- ============================================================
@@ -856,7 +792,6 @@
             'Hey welcome.',        // 🔖 CHANGE these lines
             'I made this site with some help, pretty cool right?',
             'Check my links below to find me online!',
-            'Don\'t be shy, leave me a message 💬',
         ];
 
         /* ============================================================
@@ -911,30 +846,6 @@
             else { document.getElementById('bday-countdown').innerText = `${diffDays} days until birthday`; }
         }
         calculateAgeStats();
-
-        // Chat modal
-        const msgArea = document.getElementById('chatMsg');
-        const charCount = document.getElementById('char-count');
-        msgArea.addEventListener('input', function() { charCount.textContent = `${this.value.length}/500`; });
-        function openChat() { document.getElementById('chatOverlay').classList.add('active'); document.getElementById('chatModal').classList.add('active'); document.getElementById('chatName').focus(); }
-        function closeChat() { document.getElementById('chatOverlay').classList.remove('active'); document.getElementById('chatModal').classList.remove('active'); document.getElementById('chatFeedback').textContent = ''; document.getElementById('chatFeedback').className = 'chat-feedback'; }
-        async function sendMessage() {
-            const name = document.getElementById('chatName').value.trim();
-            const msg  = document.getElementById('chatMsg').value.trim();
-            const fb   = document.getElementById('chatFeedback');
-            const btn  = document.getElementById('chatSendBtn');
-            fb.className = 'chat-feedback'; fb.textContent = '';
-            if (!name) { fb.className = 'chat-feedback error'; fb.textContent = '⚠ Please enter your name!'; return; }
-            if (!msg)  { fb.className = 'chat-feedback error'; fb.textContent = '⚠ Please write a message!'; return; }
-            btn.disabled = true; btn.innerHTML = 'Sending... <i class="fas fa-spinner fa-spin"></i>';
-            try {
-                const res = await fetch(DISCORD_WEBHOOK, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ embeds: [{ title: '💬 New message from your site', color: 0xff003c, fields: [{ name: '👤 Name', value: name, inline: true }, { name: '📝 Message', value: msg, inline: false }], footer: { text: 'your site · github.io' }, timestamp: new Date().toISOString() }] }) });
-                if (res.ok || res.status === 204) { fb.className = 'chat-feedback success'; fb.textContent = '✨ Message sent!'; document.getElementById('chatName').value = ''; msgArea.value = ''; charCount.textContent = '0/500'; setTimeout(closeChat, 2500); }
-                else throw new Error('Bad response');
-            } catch { fb.className = 'chat-feedback error'; fb.textContent = '✗ Failed to send. Try again!'; }
-            btn.disabled = false; btn.innerHTML = 'Send &nbsp;<i class="fas fa-paper-plane"></i>';
-        }
-        document.addEventListener('keydown', e => { if (e.key === 'Escape') closeChat(); });
 
         // Site entry & typewriter
         function startSite() {
