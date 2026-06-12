@@ -429,11 +429,34 @@
                 transform: translate(-50%, -50%) scale(12);
             }
         }
+        html, body {
+            cursor: url("Untitled49_20260612225647.png"), auto;
+        }
+        .heart {
+            position: fixed;
+            pointer-events: none;
+            font-size: 14px;
+            transform: translate(-50%, -50%);
+            animation: floatUp 1s ease-out forwards;
+            z-index: 99999;
+            filter: drop-shadow(0 0 6px rgba(255, 0, 150, 0.6));
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -120%) scale(1.8);
+            }
+        }
     </style>
 </head>
 <body>
     <div id="ripple-container"></div>
-
+    <div id="heart-container"></div>
     <div id="scroll-progress"></div>
     <canvas id="particles-canvas"></canvas>
 
@@ -937,6 +960,23 @@
             ripple.remove();
         }, 600);
     });
+        const heartContainer = document.getElementById("heart-container");
+
+        document.addEventListener("mousemove", (e) => {
+            const heart = document.createElement("div");
+            heart.className = "heart";
+            heart.innerText = "💗";
+
+            heart.style.left = e.clientX + "px";
+            heart.style.top = e.clientY + "px";
+
+            heartContainer.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 1000);
+        });
+        
     </script>
 </body>
 </html>
