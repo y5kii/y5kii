@@ -19,6 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&display=swap" rel="stylesheet">
 
     <style>
+        
         /* ============================================================
            🎨 CUSTOM FONTS
            If you have your own font .ttf files, put them in the same
@@ -397,9 +398,41 @@
             font-family: 'JetBrains Mono', monospace; letter-spacing: 0.5px;
             background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
         }
+        /* ===== RIPPLE EFFECT ===== */
+
+        #ripple-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+            z-index: 99998;
+        }
+
+        .ripple {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            border: 2px solid var(--secondary);
+            animation: rippleExpand 0.6s ease-out forwards;
+            box-shadow: 0 0 12px var(--secondary);
+        }
+
+        @keyframes rippleExpand {
+            0% {
+                opacity: 0.8;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(12);
+            }
+        }
     </style>
 </head>
 <body>
+    <div id="ripple-container"></div>
 
     <div id="scroll-progress"></div>
     <canvas id="particles-canvas"></canvas>
@@ -686,6 +719,8 @@
     <footer class="site-footer">
         © <span id="current-year"></span> Yukii. All rights reserved.
     </footer>
+    <div id="ripple-container"></div>
+    </body>
 
     <script>
         /* ============================================================
@@ -888,6 +923,20 @@
             } catch { document.getElementById('lfm-track').innerText = 'Connection Lost'; document.getElementById('lfm-artist').innerText = ''; document.getElementById('lfm-status').innerText = ''; }
         }
         setInterval(fetchNowPlaying, 30000);
+
+        document.addEventListener("click", (e) => {
+        const ripple = document.createElement("div");
+        ripple.className = "ripple";
+
+        ripple.style.left = e.clientX + "px";
+        ripple.style.top = e.clientY + "px";
+
+        document.getElementById("ripple-container").appendChild(ripple);
+
+        setTimeout(() => {
+            ripple.remove();
+        }, 600);
+    });
     </script>
 </body>
 </html>
